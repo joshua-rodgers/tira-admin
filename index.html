@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tira Admin</title>
+  <style>
+    :root { color-scheme: dark; font: 15px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#121318; color:#f5f5fa }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh }
+    button,input,select { font:inherit }
+    button { cursor:pointer; border:0; border-radius:12px; background:#6459e9; color:white; padding:11px 15px; font-weight:650 }
+    button.secondary { background:#282a34; color:#e6e6ef }
+    button.danger { background:#7d3442 }
+    button:disabled { opacity:.45; cursor:default }
+    input { width:100%; background:#1e2029; color:#f5f5fa; border:1px solid #343643; border-radius:12px; padding:12px 14px }
+    input:focus { outline:2px solid #756cf1; outline-offset:1px }
+    header { border-bottom:1px solid #2e3039; padding:19px max(24px,calc((100vw - 1080px)/2)); display:flex; align-items:center; gap:18px }
+    .brand { font-size:25px; font-weight:820; letter-spacing:-1.3px; margin-right:auto }
+    .brand span { color:#756cf1 }
+    main { max-width:1080px; margin:auto; padding:32px 24px 60px }
+    h1 { font-size:29px; letter-spacing:-.7px; margin:0 0 24px }
+    h2 { font-size:17px; margin:0 0 18px }
+    p { line-height:1.5 }
+    .muted { color:#a4a6b4 }
+    .panel { background:#1b1d25; border:1px solid #32343f; border-radius:18px; padding:22px; margin-bottom:17px }
+    .login { max-width:390px; margin:10vh auto }
+    .stack { display:grid; gap:13px }
+    .row { display:flex; align-items:center; gap:12px; flex-wrap:wrap }
+    .split { display:grid; grid-template-columns:minmax(300px,1fr) minmax(350px,1.2fr); gap:18px }
+    .list { display:grid; gap:9px }
+    .item { width:100%; text-align:left; background:#242630; border:1px solid #353743; border-radius:13px; padding:14px }
+    .item:hover,.item[aria-current="true"] { border-color:#756cf1 }
+    .item strong { display:block; margin-bottom:4px }
+    .item small { color:#aaaab7 }
+    .chat { max-height:390px; overflow:auto; display:grid; gap:8px; margin-top:16px }
+    .chat p { margin:0; padding:10px 12px; border-radius:11px; background:#242630 }
+    .chat small { display:block; color:#aaaab7; margin-bottom:4px }
+    .status { min-height:24px; color:#ffb8bb }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:17px }
+    .user { display:flex; align-items:center; justify-content:space-between; gap:10px; border-top:1px solid #32343f; padding:13px 0 }
+    .user:first-child { border:0 }
+    [hidden] { display:none!important }
+    @media(max-width:760px) { .split { grid-template-columns:1fr } header { padding:16px 24px } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">T<span>i</span>ra</div>
+    <div id="admin-nav" class="row" hidden>
+      <button class="secondary" data-view="reports">Reports</button>
+      <button class="secondary" data-view="users">Users</button>
+      <button class="secondary" id="signout">Sign out</button>
+    </div>
+  </header>
+  <main>
+    <section id="login" class="panel login">
+      <h1>Admin sign in</h1>
+      <form id="login-form" class="stack">
+        <input id="email" type="email" autocomplete="username" placeholder="Email" aria-label="Email" required>
+        <input id="password" type="password" autocomplete="current-password" placeholder="Password" aria-label="Password" required>
+        <button type="submit">Sign in</button>
+      </form>
+      <p id="login-error" class="status" role="alert"></p>
+    </section>
+    <section id="reports-view" hidden>
+      <h1>Reports</h1>
+      <div class="split">
+        <div class="panel"><div id="reports-list" class="list"></div></div>
+        <div class="panel" id="report-detail"><p class="muted">Select a report.</p></div>
+      </div>
+    </section>
+    <section id="users-view" hidden>
+      <h1>Users</h1>
+      <div class="grid">
+        <div class="panel">
+          <h2>Accounts</h2>
+          <div id="users-list"></div>
+        </div>
+        <div class="stack">
+          <div class="panel stack">
+            <h2>Invite</h2>
+            <input id="invite-email" type="email" placeholder="Email" aria-label="Invite email">
+            <button id="invite">Send invitation</button>
+          </div>
+          <div class="panel stack">
+            <h2>Password reset</h2>
+            <input id="reset-email" type="email" placeholder="Email" aria-label="Reset email">
+            <button id="reset" class="secondary">Send reset link</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <p id="status" class="status" role="status"></p>
+  </main>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
