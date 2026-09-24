@@ -2,6 +2,7 @@ const { url: base, key } = window.TIRA_CONFIG;
 const $ = (id) => document.getElementById(id);
 let token = "";
 let currentReport = null;
+let currentAdminID = "";
 
 function message(text, target = "status") { $(target).textContent = text; }
 function node(tag, text, className) {
@@ -54,10 +55,12 @@ $("login-form").addEventListener("submit", async (event) => {
     const profile = await request("/auth/v1/user");
     const roles = await request(`/rest/v1/admin_users?user_id=eq.${profile.id}&select=user_id`);
     if (!roles.length) throw new Error("Admin access required.");
+    currentAdminID = profile.id;
     $("password").value = "";
     show("reports");
   } catch (error) {
     token = "";
+    currentAdminID = "";
     message(error.message, "login-error");
   } finally { button.disabled = false; }
 });
@@ -68,6 +71,7 @@ document.querySelectorAll("[data-view]").forEach((button) => {
 $("signout").addEventListener("click", async () => {
   try { await request("/auth/v1/logout", { method: "POST" }); } catch { /* local session still ends */ }
   token = "";
+  currentAdminID = "";
   currentReport = null;
   show("login");
 });
@@ -155,7 +159,8 @@ async function loadUsers() {
       });
       const controls = node("div", undefined, "row");
       controls.append(button, remove);
-      row.append(label, controls);
+      row.append(label);
+      if (user.id !== currentAdminID) row.append(controls);
       list.append(row);
     }
   } catch (error) { list.replaceChildren(); message(error.message); }
